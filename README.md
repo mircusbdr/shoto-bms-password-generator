@@ -1,58 +1,70 @@
-SHOTO BMS Tool Password XML Generator
+# SHOTO BMS Tool Password XML Generator
 
-A small Python utility for generating a password hash compatible with SHOTO BMS Tool and creating the corresponding pwd.xml configuration file.
+A small Python utility that generates a password hash compatible with **SHOTO BMS Tool** and creates the corresponding `pwd.xml` configuration file.
 
-Features
-Accepts a new password from the user
-Validates that the password is not empty
-Generates the password hash required by SHOTO BMS Tool
-Creates a pwd.xml file automatically
-Writes the generated hash to all supported password fields
-Uses only the Python standard library
-No external dependencies required
-Requirements
-Python 3.x
-SHOTO BMS Tool
+## Features
 
-No additional Python packages are required.
+- Prompts for a new password without displaying it in the terminal
+- Rejects empty passwords
+- Generates the password hash expected by SHOTO BMS Tool
+- Creates or overwrites `pwd.xml`
+- Writes the generated hash to all supported password fields
+- Uses only the Python standard library
+- No external dependencies are required
 
-Usage
+## Requirements
 
-Run the script from a terminal:
+- Python 3.x
+- SHOTO BMS Tool
 
+## Usage
+
+Run:
+
+```bash
 python shoto_password.py
+```
 
-You will be prompted to enter a new password:
+You will be prompted for a new password:
 
-Introdu noua parolă:
+```text
+Enter the new password:
+```
 
-After entering the password, the script generates:
+The password is hidden while typing.
 
+After the password is entered, the script creates:
+
+```text
 pwd.xml
+```
 
 in the current working directory.
 
-Password Hash Generation
+## Password Hash Generation
 
-The password is processed using the following steps:
+The utility follows this process:
 
-The password is encoded using UTF-8.
-An MD5 hash of the password is generated.
-The hexadecimal MD5 result is converted to uppercase.
-The fixed value LD|SD is appended.
-A second MD5 hash is generated.
-The final hexadecimal hash is converted to uppercase.
+1. Encode the password as UTF-8.
+2. Calculate its MD5 hash.
+3. Convert the hexadecimal MD5 result to uppercase.
+4. Append the fixed value `LD|SD`.
+5. Calculate a second MD5 hash.
+6. Convert the final hexadecimal hash to uppercase.
 
 Conceptually:
 
+```text
 MD5(UPPERCASE(MD5(password)) + "LD|SD")
+```
 
-The resulting hash is used in the generated XML configuration.
+> This notation is conceptual. The implementation appends the bytes `b"LD|SD"` to the UTF-8 bytes of the uppercase first MD5 hexadecimal digest.
 
-Generated XML
+## Generated XML
 
-The generated pwd.xml file has the following structure:
+The generated `pwd.xml` contains the same hash in each supported password field:
 
+```xml
 <?xml version='1.0' encoding='utf-8'?>
 <PASSWORD>
   <login_pwd>HASH</login_pwd>
@@ -66,127 +78,93 @@ The generated pwd.xml file has the following structure:
   <gyro_pwd>HASH</gyro_pwd>
   <comm_pwd>HASH</comm_pwd>
 </PASSWORD>
+```
 
-The same generated hash is written to all password fields.
+## Installing `pwd.xml` in SHOTO BMS Tool
 
-Installing pwd.xml in SHOTO BMS Tool
+After generating `pwd.xml`, copy it into the **`config` folder of the SHOTO BMS Tool installation**.
 
-After generating the file, it must be copied into the config directory of the SHOTO BMS Tool installation.
+Recommended procedure:
 
-Steps
-Close SHOTO BMS Tool if it is running.
-Locate the SHOTO BMS Tool installation folder.
-Open the config directory.
-Back up the existing pwd.xml file if one is present.
-Copy the newly generated pwd.xml into the config directory.
-Replace the existing file when prompted.
-Start SHOTO BMS Tool again.
+1. Close SHOTO BMS Tool.
+2. Locate the SHOTO BMS Tool installation directory.
+3. Open its `config` folder.
+4. Back up the existing `pwd.xml`, if present.
+5. Copy the newly generated `pwd.xml` into the `config` folder.
+6. Replace the existing file when prompted.
+7. Start SHOTO BMS Tool again.
 
-The directory structure should look similar to:
+Example:
 
+```text
 SHOTO BMS Tool/
 ├── ...
 ├── config/
 │   └── pwd.xml
 └── ...
-Backup Recommendation
+```
 
-Before replacing the existing configuration file, it is recommended to create a backup.
+### Backup recommendation
 
-For example:
+Before replacing the original configuration, make a backup such as:
 
-pwd.xml
-↓
+```text
 pwd.xml.backup
+```
 
-This allows the previous configuration to be restored if necessary.
+The exact SHOTO BMS Tool installation path depends on where the application was installed.
 
-The exact installation directory may vary depending on where SHOTO BMS Tool was installed.
+## Typical Workflow
 
-Typical Workflow
+```text
 Run shoto_password.py
-        │
-        ▼
+        |
+        v
 Enter the new password
-        │
-        ▼
+        |
+        v
 Generate password hash
-        │
-        ▼
+        |
+        v
 Create pwd.xml
-        │
-        ▼
-Copy pwd.xml to
+        |
+        v
+Copy pwd.xml to:
 SHOTO BMS Tool/config/
-        │
-        ▼
+        |
+        v
 Replace existing pwd.xml
-        │
-        ▼
+        |
+        v
 Restart SHOTO BMS Tool
-Functions
-checksum(password: str) -> str
+```
 
-Generates the password hash.
+## Repository Structure
 
-Parameter
-
-password — Password entered by the user.
-
-Returns
-
-The final uppercase hexadecimal hash.
-
-Raises
-
-ValueError if the supplied password is empty or contains only whitespace.
-write_pwd_xml(hash_value: str, filename: str = "pwd.xml")
-
-Creates or overwrites the XML password configuration file.
-
-Parameters
-
-hash_value — Hash to write to the XML fields.
-filename — Output filename. Defaults to pwd.xml.
-Recommended Repository Structure
+```text
 shoto-bms-password-generator/
 ├── shoto_password.py
 ├── README.md
 ├── LICENSE
 └── .gitignore
+```
 
-The generated pwd.xml should normally not be committed to the repository.
+The generated `pwd.xml` is excluded from Git by default.
 
-.gitignore
+## Security Notice
 
-Recommended .gitignore:
+MD5 is cryptographically broken and should not be used for modern password storage or new authentication systems.
 
-# Generated password configuration
-pwd.xml
+This utility implements an existing application-specific format for compatibility purposes. For new systems, use a dedicated password hashing algorithm such as Argon2, bcrypt, or scrypt.
 
-# Python
-__pycache__/
-*.py[cod]
+## Disclaimer
 
-# Virtual environments
-.venv/
-venv/
+Use this utility only on systems and equipment that you own or are authorized to configure.
 
-# IDE / editor files
-.vscode/
-.idea/
+Always back up the original `pwd.xml` before replacing it.
 
-# OS files
-.DS_Store
-Thumbs.db
-Security Notice
+The author is not responsible for configuration loss, access issues, or unauthorized use of this software.
 
-MD5 is cryptographically broken and should not be used for modern password storage or authentication systems.
-This project implements the hashing format expected by the target application for compatibility purposes only.
-Do not use this hashing method when designing new authentication systems. Modern password storage should use dedicated password hashing algorithms such as Argon2, bcrypt, or scrypt.
+## License
 
-Disclaimer
-
-Use this utility only with systems and equipment that you own or are authorized to configure.
-Always create a backup of the original configuration before replacing pwd.xml.
-The author is not responsible for configuration loss, system access issues, or unauthorized use of this software.
+Released under the MIT License.
