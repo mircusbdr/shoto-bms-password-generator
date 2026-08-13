@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<PASSWORD>
+  <login_pwd></login_pwd>
+  <parameter_pwd1></parameter_pwd1>
+  <parameter_pwd2></parameter_pwd2>
+  <config_pwd></config_pwd>
+  <system_pwd></system_pwd>
+  <system1_pwd></system1_pwd>
+  <theft_pwd></theft_pwd>
+  <general_pwd></general_pwd>
+  <gyro_pwd></gyro_pwd>
+  <comm_pwd></comm_pwd>
+</PASSWORD>
