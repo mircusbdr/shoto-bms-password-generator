@@ -148,23 +148,3 @@ shoto-bms-password-generator/
 ├── LICENSE
 └── .gitignore
 ```
-
-The generated `pwd.xml` is excluded from Git by default.
-
-## Security Notice
-
-MD5 is cryptographically broken and should not be used for modern password storage or new authentication systems.
-
-This utility implements an existing application-specific format for compatibility purposes. For new systems, use a dedicated password hashing algorithm such as Argon2, bcrypt, or scrypt.
-
-## Disclaimer
-
-Use this utility only on systems and equipment that you own or are authorized to configure.
-
-Always back up the original `pwd.xml` before replacing it.
-
-The author is not responsible for configuration loss, access issues, or unauthorized use of this software.
-
-## License
-
-Released under the MIT License.
