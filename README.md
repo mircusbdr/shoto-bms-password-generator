@@ -138,13 +138,3 @@ Replace existing pwd.xml
         v
 Restart SHOTO BMS Tool
 ```
-
-## Repository Structure
-
-```text
-shoto-bms-password-generator/
-├── shoto_password.py
-├── README.md
-├── LICENSE
-└── .gitignore
-```
